@@ -73,10 +73,7 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
                     <span class="text-success"></span>
                 </li>
-<!--                <li class="list-group-item d-flex justify-content-between">-->
-<!--                    <span>Total (USD)</span>-->
-<!--                    <strong>$20</strong>-->
-<!--                </li>-->
+
             </ul>
 
         </div>
