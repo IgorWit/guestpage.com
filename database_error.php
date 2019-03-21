@@ -14,6 +14,56 @@
     <main>
         <h1>Database Error</h1>
         <p>There was an error connecting to the database.</p>
+        <div class="wrapper">
+
+            <!-- BEGIN notify -->
+
+            <!-- END notify -->
+
+
+
+
+            <div id="content">
+                <div class="wrapper">
+
+                    <!-- BEGIN notify -->
+
+                    <!-- END notify -->
+
+
+
+
+                    <pre style="line-height: 1.25; white-space: pre;">
+            \          SORRY            /
+             \                         /
+              \    This page does     /
+               ]   not exist yet.    [    ,'|
+               ]                     [   /  |
+               ]___               ___[ ,'   |
+               ]  ]\             /[  [ |:   |
+               ]  ] \           / [  [ |:   |
+               ]  ]  ]         [  [  [ |:   |
+               ]  ]  ]__     __[  [  [ |:   |
+               ]  ]  ] ]\ _ /[ [  [  [ |:   |
+               ]  ]  ] ] (#) [ [  [  [ :===='
+               ]  ]  ]_].nHn.[_[  [  [
+               ]  ]  ]  HHHHH. [  [  [
+               ]  ] /   `HH("N  \ [  [
+               ]__]/     HHH  "  \[__[
+               ]         NNN         [
+               ]         N/"         [
+               ]         N H         [
+              /          N            \
+             /           q,            \
+            /                           \
+                    </pre>
+
+
+                </div>
+            </div>
+
+
+        </div>
         <p>Error message: <?php echo $error_message; ?></p>
         <p>&nbsp;</p>
     </main>

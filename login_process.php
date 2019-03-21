@@ -28,7 +28,7 @@ echo "Username or password does not exist."; // wrong details
 
 }
 catch(PDOException $e){
-echo $e->getMessage();
+    echo $e->getMessage();
 }
 }
 

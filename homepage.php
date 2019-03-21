@@ -1,22 +1,47 @@
 <?php
-session_start();
+    session_start();
 
-if(!isset($_SESSION['user_session']))
-{
-	header("Location: index.php");
-}
+    if(!isset($_SESSION['user_session']))
+    {
+    	header("Location: index.php");
+    }
 
-include_once 'dbconfig.php';
+    include_once 'dbconfig.php';
 
-$stmt = $db->prepare("SELECT * FROM tbl_users WHERE user_id=:uid");
-$stmt->execute(array(":uid"=>$_SESSION['user_session']));
-$row=$stmt->fetch(PDO::FETCH_ASSOC);
-
-
-//checking how much notes we have in total in our DB
-//...... some code which will show us a notes regarding our user only, COUNT(*) ...
+    $stmt = $db->prepare("SELECT * FROM tbl_users WHERE user_id=:uid");
+    $stmt->execute(array(":uid"=>$_SESSION['user_session']));
+    $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
 
+    //checking how much notes we have in total in our DB
+    //...... some code which will show us a notes regarding our user only, COUNT(*) ...
+
+    //loading data from DB
+    if(isset($_POST["insert"])){
+        $file = addslashes(file_get_contents($_FILES["image"]["tmp_name"]));
+        //Filling our array with data
+//        $data = [
+//          'date_and_time' => date("Y-m-d H:i:s"),
+//          'user_name' => $row['user_name'],
+//          'email' => 'some email',
+//          'homepage' => 'some address',
+//          'text' => 'some text',
+//          'image' => '$file'
+//        ];
+//        $load_data = 'INSERT INTO user_notes(date_and_time, user_name, email, homepage, text, image) VALUES (?, ?, ?, ?, ?, ?)';
+//        if($stmt->$db->prepare($load_data)){
+//            echo '<script>alert("Image Inserted into Database")</script>';
+//            $stmt->execute($data);
+//        }else{
+//            echo '<script>alert("We were not able to upload your image")</script>';
+//        }
+//BY SOME INTERESTING MISTAKE PDO REQUEST DOESN"T WORK I WAS PUSHED TO USE MYSQLI() REQUEST
+
+
+
+
+
+    }
 
 
 ?>
@@ -28,8 +53,15 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Homepage SAMS</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<link href="css/style.css" rel="stylesheet" media="screen">
+    <link href="css/style.css" rel="stylesheet" media="screen">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/ee309940e2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/ee309940e2.js"></script>
+
+
 </head>
 
 <body>
@@ -80,11 +112,11 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
         <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Страница ввода данных пользователя</h4>
-            <form class="needs-validation was-validated" novalidate="">
+            <form method="post" class="needs-validation was-validated" novalidate="" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="your_name">Ваше имя</label>
-                        <input type="text" class="form-control" id="your_name" placeholder="" value="" required="">
+                        <input type="text" class="form-control" id="your_name" placeholder="" value="<?php echo $row['user_name'];?>" required="">
                         <div class="invalid-feedback">
                             Требуется ввести ваше имя
                         </div>
@@ -109,15 +141,18 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
                 </div>
 
                 <div class="mb-3">
-                    <label for="email">Homepage <span class="text-muted">(Optional)</span></label>
-                    <input type="email" class="form-control" id="email" placeholder="you@example.com">
-                    <div class="invalid-feedback">
-                        Можете ввести адресс и ссылку на нужную информацию сюда.
+                    <label for="your_homepage">Homepage <span class="text-muted">(Optional)</span> </label>
+                    <input type="text" class="form-control" id="your_homepage" placeholder="you@example.com" value="nosite" required="">
+                    <div class="invalid-feedback ">
+                        Введите ваш email.
                     </div>
                 </div>
-
+                <div class="mb-3">
+                    <label for="your_homepage">Добавте картинку</label><br>
+                    <input type="file" name="image" id="image" />
+                </div>
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Продолжить</button>
+                <input class="btn btn-primary btn-lg btn-block" type="submit" name="insert" id="insert" value="Продолжить"/>
             </form>
         </div>
     </div>
@@ -126,9 +161,6 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
 
 
-<script src="https://use.fontawesome.com/ee309940e2.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 </body>
 </html>
