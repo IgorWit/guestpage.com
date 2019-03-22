@@ -30,7 +30,6 @@ function submitForm()
 var data = $("#login-form").serialize();
 
 $.ajax({
-
 type : 'POST',
 url  : 'login_process.php',
 data : data,
@@ -42,16 +41,14 @@ $("#btn-login").html('<span class="glyphicon glyphicon-transfer"></span> &nbsp; 
 success :  function(response)
 {						
         if(response=="ok"){
-
                 $("#btn-login").html('<img src="../img/btn-ajax-loader.gif" /> &nbsp; Signing In ...');
                 setTimeout(' window.location.href = "../homepage.php"; ',1000);
         }
         else{
-
-                $("#error").fadeIn(1000, function(){						
-$("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; '+response+' !</div>');
-                                                        $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
-                                        });
+            $("#error").fadeIn(1000, function(){
+                $("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; '+response+' !</div>');
+                $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
+            });
         }
 }
 });

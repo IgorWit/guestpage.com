@@ -1,25 +1,38 @@
 <?php
-    session_start();
+session_start();
 
-    if(!isset($_SESSION['user_session']))
-    {
-    	header("Location: index.php");
+if(!isset($_SESSION['user_session']))
+{
+    header("Location: index.php");
+}
+
+include_once 'dbconfig.php';
+
+$stmt = $db->prepare("SELECT * FROM tbl_users WHERE user_id=:uid");
+$stmt->execute(array(":uid"=>$_SESSION['user_session']));
+$row=$stmt->fetch(PDO::FETCH_ASSOC);
+
+
+//checking how much notes we have in total in our DB
+$sql = "SELECT COUNT(*) as notes FROM tbl_images"; //request for checking total notes
+$request_for_total = $db->prepare($sql);
+$request_for_total->execute();
+$amount_of_notes = $request_for_total->fetchColumn();
+
+
+
+//...... some code which will show us a notes regarding our user only, COUNT(*) ...
+
+//loading data from DB
+$mysqliconnection = mysqli_connect("localhost", "root", "", "samsbd");
+if(isset($_POST["insert"])){
+    //$file = addslashes(file_get_contents($_FILES["image"]["tmp_name"]));
+
+    if(!empty($_FILES['image']['tmp_name'])
+        && file_exists($_FILES['image']['tmp_name'])) {
+        $file= addslashes(file_get_contents($_FILES['image']['tmp_name']));
     }
-
-    include_once 'dbconfig.php';
-
-    $stmt = $db->prepare("SELECT * FROM tbl_users WHERE user_id=:uid");
-    $stmt->execute(array(":uid"=>$_SESSION['user_session']));
-    $row=$stmt->fetch(PDO::FETCH_ASSOC);
-
-
-    //checking how much notes we have in total in our DB
-    //...... some code which will show us a notes regarding our user only, COUNT(*) ...
-
-    //loading data from DB
-    if(isset($_POST["insert"])){
-        $file = addslashes(file_get_contents($_FILES["image"]["tmp_name"]));
-        //Filling our array with data
+    //Filling our array with data
 //        $data = [
 //          'date_and_time' => date("Y-m-d H:i:s"),
 //          'user_name' => $row['user_name'],
@@ -35,13 +48,27 @@
 //        }else{
 //            echo '<script>alert("We were not able to upload your image")</script>';
 //        }
-//BY SOME INTERESTING MISTAKE PDO REQUEST DOESN"T WORK I WAS PUSHED TO USE MYSQLI() REQUEST
+//BY SOME REASON PDO REQUEST DOESN"T WORK I WAS PUSHED TO USE MYSQLI() REQUEST
+
+//THIS PART WORKS PERFECTLY
+    //$current_date_time = date("Y-m-d H:i:s"); //current date
+//    $query = "INSERT INTO tbl_images(name) VALUES ('$file')";
+//    if(mysqli_query($mysqliconnection, $query)){
+//        echo '<script> alert("Image inserted into database")</script>';
+//    }
+
+        $name_p = $_POST['your_name'];
+        $email_p = $_POST['your_email_input'];
+        $homepage_p = $_POST['your_homepage'];
+        $your_message_p = $_POST['your_message'];
 
 
-
-
-
-    }
+        $current_date_time = date("Y-m-d H:i:s"); //current date
+        $query = "INSERT INTO tbl_images(user_name, email, homepage, text, date, image_name) VALUES ('$name_p', '$email_p', '$homepage_p', '$your_message_p', '$current_date_time','$file')";
+        if(mysqli_query($mysqliconnection, $query)){
+            echo '<script> alert("Image inserted into database")</script>';
+        }
+}
 
 
 ?>
@@ -89,15 +116,8 @@
                         <h6 class="my-0">Количество записей</h6>
                         <small class="text-muted">то что есть в базе</small>
                     </div>
-                    <span class="text-muted">12</span>
+                    <span class="text-muted"><?php echo $amount_of_notes?></span>
                 </li>
-<!--                <li class="list-group-item d-flex justify-content-between lh-condensed">-->
-<!--                    <div>-->
-<!--                        <h6 class="my-0">продукты которые вас интересуют</h6>-->
-<!--                        <small class="text-muted">радость и счастье</small>-->
-<!--                    </div>-->
-<!--                    <span class="text-muted">8</span>-->
-<!--                </li>-->
                 <li class="list-group-item d-flex justify-content-between bg-light">
                     <div class="text-success">
                         <a href="#"><h6 class="my-0">Просмотреть записи</h6></a>
@@ -116,14 +136,14 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="your_name">Ваше имя</label>
-                        <input type="text" class="form-control" id="your_name" placeholder="" value="<?php echo $row['user_name'];?>" required="">
+                        <input type="text" class="form-control" id="your_name" name="your_name" placeholder="" value="<?php echo $row['user_name'];?>" required="">
                         <div class="invalid-feedback">
                             Требуется ввести ваше имя
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="your_email">Email </label>
-                        <input type="text" class="form-control" id="your_email" placeholder="you@example.com" value="" required="">
+                        <input type="text" class="form-control" id="your_email" placeholder="you@example.com" value="" required= name="your_email_input">
                         <div class="invalid-feedback">
                             Введите ваш email.
                         </div>
@@ -131,9 +151,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="your_homepage">Сообщение</label>
+                    <label for="your_message">Сообщение</label>
                     <div class="input-group">
-                        <textarea id="your_homepage" class="form-control" id="exampleFormControlTextarea1" rows="3" required=""></textarea>
+                        <textarea id="your_homepage" class="form-control" id="exampleFormControlTextarea1" rows="3" required="" name="your_message"></textarea>
                         <div class="invalid-feedback" style="width: 100%;">
                             Нужно ввести информацию.
                         </div>
@@ -142,13 +162,13 @@
 
                 <div class="mb-3">
                     <label for="your_homepage">Homepage <span class="text-muted">(Optional)</span> </label>
-                    <input type="text" class="form-control" id="your_homepage" placeholder="you@example.com" value="nosite" required="">
+                    <input type="text" class="form-control" id="your_homepage" placeholder="you@example.com" value="nosite" required="" name="your_homepage" >
                     <div class="invalid-feedback ">
                         Введите ваш email.
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="your_homepage">Добавте картинку</label><br>
+                    <label for="your_image">Добавте картинку</label><br>
                     <input type="file" name="image" id="image" />
                 </div>
                 <hr class="mb-4">
