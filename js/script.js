@@ -80,3 +80,8 @@ $(document).ready(function(){
         }
     });
 });
+
+//script for table
+$(document).ready( function () {
+    $('#table_id').DataTable();
+} );
