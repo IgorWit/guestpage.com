@@ -1,0 +1,3 @@
+name: samsbd
+DB username: root
+Password: Passwordasitis
