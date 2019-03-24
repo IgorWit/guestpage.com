@@ -7,11 +7,7 @@ rules:
 {
 password: {
 required: true,
-},
-user_email: {
-required: true,
-email: true
-},
+}
 },
 messages:
 {
@@ -57,7 +53,53 @@ return false;
 /* login submit */
 });
 
+//Saving image validation
+$('document').ready(function()
+{
+    //add-note-homepage-form
+    /*validation*/
+    $('add-note-homepage-form').validate({
+        rules_homepage:
+            {
+                 text_homepage:{
+                     required: true,
+                 },
+                 user_name_homepage:{
+                     required: true
+                 }
+            },
+        submitHandler: loadImages_homepage
+    });
+    
+    function loadImages_homepage() {
+        var data = $("#add-note-homepage-form").serialize();
 
+        $.ajax({
+            type:'POST',
+            url : 'validate_image_loading.php',
+            data:data,
+            beforeSend: function () {
+                $("#homepage_error").fadeOut();
+                $("#insert").html('<span class="glyphicon glyphicon-transfer"></span> &nbsp; Отправляем ...');
+            },
+            success: function (response) {
+                if(response=="ok"){
+                    $("#insert").html('<img src="../img/btn-ajax-loader.gif" /> &nbsp; Отправляем ещё ...');
+                    //setTimeout(' window.location.href = "../homepage.php"; ',1000);
+                    //clear all text or fields
+                }
+                else {
+                    $("homepage_error").fadeIn(1000,function () {
+                        $("homepage_error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; '+response+' !</div>');
+                        $("#insert").html('<input class="btn btn-primary btn-lg btn-block" type="submit" name="insert" id="insert" value="Продолжить"/>');
+                    });
+                }
+            }
+        });
+        return false;
+    }
+
+});
 
 //CHECKING filetype extension
 $(document).ready(function(){

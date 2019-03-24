@@ -28,10 +28,8 @@ $mysqliconnection = mysqli_connect("localhost", "root", "", "samsbd");
 if(isset($_POST["insert"])){
     //$file = addslashes(file_get_contents($_FILES["image"]["tmp_name"]));
 
-    if(!empty($_FILES['image']['tmp_name'])
-        && file_exists($_FILES['image']['tmp_name'])) {
-        $file= addslashes(file_get_contents($_FILES['image']['tmp_name']));
-    }
+
+
     //Filling our array with data
 //        $data = [
 //          'date_and_time' => date("Y-m-d H:i:s"),
@@ -57,25 +55,43 @@ if(isset($_POST["insert"])){
 //        echo '<script> alert("Image inserted into database")</script>';
 //    }
 
-        $name_p = $_POST['your_name'];
-        $email_p = $_POST['your_email_input'];
-        $homepage_p = $_POST['your_homepage'];
-        $your_message_p = $_POST['your_message'];
+    $name_p = $_POST['your_name'];
+    $email_p = $_POST['your_email_input'];
+    $homepage_p = $_POST['your_homepage'];
+    $your_message_p = $_POST['your_message'];
 
+    echo "<script> console.log('$name_p')</script>";
+    echo "<script> console.log('$email_p')</script>";
+    echo "<script> console.log('$homepage_p')</script>";
+    echo "<script> console.log('$your_message_p')</script>";
 
-        $current_date_time = date("Y-m-d H:i:s"); //current date
-        $query = "INSERT INTO tbl_images(user_name, email, homepage, text, date, image_name) VALUES ('$name_p', '$email_p', '$homepage_p', '$your_message_p', '$current_date_time','$file')";
-        if(mysqli_query($mysqliconnection, $query)){
-            echo '<script> alert("Image inserted into database")</script>';
+    try{
+        if(!empty($name_p) && !empty($email_p) && !empty($your_message_p)){
+            if(!empty($_FILES['image']['tmp_name'])
+                && file_exists($_FILES['image']['tmp_name'])) {
+                $file= addslashes(file_get_contents($_FILES['image']['tmp_name']));
+            }
+            $current_date_time = date("Y-m-d H:i:s"); //current date
+            $query = "INSERT INTO tbl_images(user_name, email, homepage, text, date, image_name) VALUES ('$name_p', '$email_p', '$homepage_p', '$your_message_p', '$current_date_time','$file')";
+            if(mysqli_query($mysqliconnection, $query)){
+                echo '<script> alert("Image inserted into database")</script>'; //change on popup later
+            }
+            //echo "ok"; // success
         }
+        else{
+            //echo "Fill data!"; // wrong details
+        }
+    }catch(Exception $e){
+        echo $e->getMessaage();
+    }
 }
 
 
 ?>
 <!DOCTYPE html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Homepage SAMS</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Homepage SAMS</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet" media="screen">
 
@@ -124,7 +140,11 @@ if(isset($_POST["insert"])){
         </div>
         <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Страница ввода данных пользователя</h4>
-            <form method="post" class="needs-validation was-validated" novalidate="" enctype="multipart/form-data">
+            <div id="homepage_error" class="col-md-6 mb-3">
+                <!-- error will be shown here ! -->
+                <!--<span class="glyphicon glyphicon-info-sign">22</span>-->
+            </div>
+            <form method="post" class="needs-validation was-validated" novalidate="" enctype="multipart/form-data" id="add-note-homepage-form">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="your_name">Ваше имя</label>
@@ -135,7 +155,7 @@ if(isset($_POST["insert"])){
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="your_email">Email </label>
-                        <input type="text" class="form-control" id="your_email" placeholder="you@example.com" value="" required= name="your_email_input">
+                        <input type="text" class="form-control" id="your_email" placeholder="you@example.com" value="" required="" name="your_email_input">
                         <div class="invalid-feedback">
                             Введите ваш email.
                         </div>
@@ -162,7 +182,9 @@ if(isset($_POST["insert"])){
                     <input type="file" name="image" id="image" />
                 </div>
                 <hr class="mb-4">
-                <input class="btn btn-primary btn-lg btn-block" type="submit" name="insert" id="insert" value="Продолжить"/>
+                <div class="form-group">
+                    <input class="btn btn-primary btn-lg btn-block" type="submit" name="insert" id="insert" value="Продолжить"/>
+                </div>
             </form>
         </div>
     </div>

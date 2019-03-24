@@ -4,7 +4,7 @@ require_once 'dbconfig.php';
 
 if(isset($_POST['btn-login']))
 {
-$user_name = $_POST['user_name'];
+$user_name1 = $_POST['user_name'];
 $user_password = trim($_POST['password']);
 $password = ($user_password);
 
@@ -12,7 +12,7 @@ try
 {	
 
 $stmt = $db->prepare("SELECT * FROM tbl_users WHERE user_name=:user_name");
-$stmt->execute(array(":user_name"=>$user_name));
+$stmt->execute(array(":user_name"=>$user_name1));
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $count = $stmt->rowCount();
 

@@ -88,12 +88,12 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 <div>
     <?php
-    $result;
-    foreach ($db->query($sql_table_content) as $table_details){
-        echo $table_details['id'];
-        echo $table_details['user_name'];
-    }
-    $db = null; //closing
+//    $result;
+//    foreach ($db->query($sql_table_content) as $table_details){
+//        echo $table_details['id'];
+//        echo $table_details['user_name'];
+//    }
+//    $db = null; //closing
     ?>
 </div>
 </body>
